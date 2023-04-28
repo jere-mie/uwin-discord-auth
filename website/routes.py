@@ -1,5 +1,5 @@
-from flask import render_template
-from flask_login import login_user
+from flask import render_template, redirect, url_for
+from flask_login import login_user, logout_user, login_required, current_user
 from website import app, microsoft_blueprint, db
 from website.models import User
 
@@ -21,10 +21,22 @@ def microsoft_authorized():
             db.session.commit()
         login_user(user)
         print(f"Authenticated as {user}")
-        return "You are authenticated!"
+        return redirect(url_for('discord_auth'))
     else:
         return "Authentication failed"
 
 @app.route("/")
 def home():
+    if current_user.is_authenticated:
+        return redirect(url_for('discord_auth'))
     return render_template('home.html')
+
+@app.route("/discordauth")
+@login_required
+def discord_auth():
+    return render_template('discord.html')
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
