@@ -1,4 +1,5 @@
 import json
+import urllib.parse
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -10,7 +11,7 @@ with open('config.json') as f:
 
 # initializing Flask
 app = Flask(__name__)
-app.config['SECRET_KEY'] = config['secret_key']
+app.config['SECRET_KEY'] = config['flask_secret_key']
 
 # setting up SQLAlchemy connection (sqlite in this case)
 app.config['SQLALCHEMY_DATABASE_URI'] = config['database_uri']
@@ -25,13 +26,14 @@ microsoft_blueprint = OAuth2ConsumerBlueprint(
     "microsoft",
     __name__,
     scope=["openid", "email", "profile", "User.Read"],
-    client_id=config['client_id'],
-    client_secret=config['client_secret'],
+    client_id=config['azure_client_id'],
+    client_secret=config['azure_client_secret'],
     authorization_url="https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
     token_url="https://login.microsoftonline.com/common/oauth2/v2.0/token",
-    redirect_url=config['redirect_url']
+    redirect_url=config['azure_redirect_url']
 )
 
 app.register_blueprint(microsoft_blueprint, url_prefix="/login")
 
+DISCORD_AUTH_URL = f'https://discord.com/api/oauth2/authorize?client_id={config["discord_client_id"]}&redirect_uri={urllib.parse.quote(config["discord_redirect_url"])}&response_type=code&scope=identify%20guilds.join'
 from website import routes

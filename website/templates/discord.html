@@ -9,7 +9,8 @@
 <body>
     <h1>UWindsor Discord Auth</h1>
     <p>Welcome {{ current_user.name }}!</p>
-    <p>This is where Discord auth will go once ppl are logged in with MS</p>
+    <p>Please press the link below to authorize with Discord and add yourself to the Discord server</p>
+    <a href="{{ url }}">Authorize with Discord</a>
     <a href="{{ url_for('logout') }}">Logout</a>
 </body>
 </html>
