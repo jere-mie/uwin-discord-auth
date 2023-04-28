@@ -3,5 +3,6 @@
     "client_secret":"client_secret_here",
     "secret_key":"secret_key_here",
     "redirect_url":"https://localhost:5000/authorized",
-    "port":5000
+    "port":5000,
+    "database_uri":"sqlite:///site.db"
 }

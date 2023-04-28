@@ -1,5 +1,8 @@
 # project-specific
 config.json
+cert.pem
+key.pem
+instance/site.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
