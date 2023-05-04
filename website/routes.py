@@ -1,3 +1,4 @@
+import os
 import json
 import requests
 from flask import render_template, redirect, url_for, request
@@ -13,6 +14,11 @@ def microsoft_authorized():
         user_info = resp.json()
         email = user_info["mail"]
         name = user_info["displayName"]
+        job = user_info.get("jobTitle", '').lower()
+        blacklist = get_blacklist()
+
+        if ('student' not in job and 'alumni' not in job) or email in blacklist:
+            return "<h1>Error!</h1><p>Only students are allowed on this Discord server! If you believe there has been a mistake, please contact a site administrator</p>"
 
         # if user exists we simply log them in, else we create a new user and log them in
         user = User.query.filter_by(email=email).first()
@@ -85,3 +91,9 @@ def get_discord_user_id(access_token):
     response = requests.get('https://discordapp.com/api/users/@me', headers=headers)
     user_info = json.loads(response.text)
     return user_info['id']
+
+def get_blacklist():
+    if os.path.exists("blacklist.txt"):
+        with open("blacklist.txt", 'r') as f:
+            return set(f.read().splitlines())
+    return {}
