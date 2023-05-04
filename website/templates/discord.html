@@ -1,16 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UWindsor Discord Auth</title>
-</head>
-<body>
-    <h1>UWindsor Discord Auth</h1>
-    <p>Welcome {{ current_user.name }}!</p>
-    <p>Please press the link below to authorize with Discord and add yourself to the Discord server</p>
-    <a href="{{ url }}">Authorize with Discord</a>
-    <a href="{{ url_for('logout') }}">Logout</a>
-</body>
-</html>
+{% extends 'layout.html' %}
+{% block content %}
+<div class="center">
+    <h1>UWindsor Discord Auth ~ Step 2</h1>
+    <p>Welcome <strong>{{ current_user.name }}</strong>!</p>
+    <br>
+    <p>Please press the button below to authorize with Discord and add yourself to the Discord server</p>
+    <a class="btn btn-lg btn-success" href="{{ url }}">Authorize with Discord</a>    
+</div>
+{% endblock %}

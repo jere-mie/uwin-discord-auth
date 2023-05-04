@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UWindsor Discord Auth</title>
-</head>
-<body>
-    <h1>UWindsor Discord Auth</h1>
-    <a href="{{ url_for('microsoft.login') }}">Login with your UWindsor account</a>
-</body>
-</html>
+{% extends 'layout.html' %}
+{% block content %}
+<div class="center">
+    <h1>UWindsor Discord Auth ~ Step 1</h1>
+    <br>
+    <p>Please press the button below to login with your UWindsor email</p>
+    <a class="btn btn-lg btn-primary" href="{{ url_for('microsoft.login') }}">Sign in With UWindsor</a>    
+</div>
+{% endblock %}

@@ -6,6 +6,16 @@ from flask_login import login_user, logout_user, login_required, current_user
 from website import app, microsoft_blueprint, db, DISCORD_AUTH_URL, config
 from website.models import User
 
+@app.route("/")
+def home():
+    return render_template('home.html')
+
+@app.route("/discordauth")
+@login_required
+def discord_auth():
+    return render_template('discord.html', url=DISCORD_AUTH_URL)
+
+
 @app.route("/authorized")
 def microsoft_authorized():
     resp = microsoft_blueprint.session.get("https://graph.microsoft.com/v1.0/me")
@@ -18,7 +28,7 @@ def microsoft_authorized():
         blacklist = get_blacklist()
 
         if ('student' not in job and 'alumni' not in job) or email in blacklist:
-            return "<h1>Error!</h1><p>Only students are allowed on this Discord server! If you believe there has been a mistake, please contact a site administrator</p>"
+            return render_template('message.html', message=["Error!", "Only students are allowed on this Discord server! If you believe there has been a mistake, please contact a site administrator"])
 
         # if user exists we simply log them in, else we create a new user and log them in
         user = User.query.filter_by(email=email).first()
@@ -29,18 +39,7 @@ def microsoft_authorized():
         login_user(user)
         return redirect(url_for('discord_auth'))
     else:
-        return "Authentication failed"
-
-@app.route("/")
-def home():
-    if current_user.is_authenticated:
-        return redirect(url_for('discord_auth'))
-    return render_template('home.html')
-
-@app.route("/discordauth")
-@login_required
-def discord_auth():
-    return render_template('discord.html', url=DISCORD_AUTH_URL)
+        return render_template('message.html', message=["Error!", "Authentication failed. Please try again or contact a site administrator"])
 
 @app.route('/logout')
 def logout():
@@ -64,11 +63,11 @@ def discord_authorized():
     access_token = token_data['access_token']
     user_id = get_discord_user_id(access_token)
     if current_user.discord_id is not None and user_id != current_user.discord_id:
-        return '<h1>Error - This UWindsor Account is already associated with a different Discord account</h1><p>Contact a site administrator for more information</p>'
+        return render_template('message.html', message=["Error!", "This UWindsor Account is already associated with a different Discord account. Please contact a site administrator for more information."])
     add_user_to_server(user_id, config['discord_server_id'], access_token, current_user.name)
     current_user.discord_id = user_id
     db.session.commit()
-    return '<h1>Success!</h1><p>Your account has been added to the server. You can now close this window</p>'
+    return render_template('message.html', message=["Success!", "Your account has been added to the server. You can now close this window."])
 
 def add_user_to_server(user_id, server_id, access_token, nickname):
     # Add the specified user to the specified server
